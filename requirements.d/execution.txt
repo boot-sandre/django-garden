@@ -1,0 +1,3 @@
+django
+django-ninja
+importlib-metadata<4.3

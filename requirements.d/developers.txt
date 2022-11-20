@@ -1,0 +1,8 @@
+pytest
+pytest-django
+pytest-bdd
+pytest-cov
+setuptools
+ipdb
+black==22.8.0
+flake8

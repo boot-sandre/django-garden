@@ -1,0 +1,66 @@
+db.sqlite3
+.static/
+static/
+__pycache__
+.~*.*
+*.*~
+*.egg-info
+*.log
+*.pot
+*.pyc
+*.py~
+/staticfiles
+/media
+/sites
+/tmp
+.coverage
+/.idea
+/.vscode
+/htmlcov
+/celerybeat-schedule
+/email
+/cache/*.djcache
+/celerybeat-schedule.db
+/email*
+/media*
+/.env
+.venv*/
+**__pycache__**
+# frontend build
+project/webapp_statics/frontend
+project/templates/index.html
+
+# Various directory index, temp file and editor's config
+*.DS_Store
+*.idea
+.*.sw?
+
+# virtualenv
+/parts/
+!/var
+/var/*
+!/var/maintenance
+/.envs/
+/venv/
+/bin/
+.python-version
+Pipfile.lock
+
+# Ruby & Compass
+.sass-cache
+/node_modules/
+
+# project db
+/var/dumps
+
+# Third party config files
+localsettings.py
+settings_overrides.py
+credentials.py
+
+# Ignore compiled translation catalogs
+*.mo
+
+# Ignore local project environment
+.env
+flake8.log
