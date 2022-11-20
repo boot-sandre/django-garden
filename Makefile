@@ -28,7 +28,7 @@ black=$(VENV)/bin/black
 flake8=$(VENV)/bin/flake8
 #---------------------------#
 
-help: help_local
+help: help_local help_podman
 
 help_local:
 	@echo "##############################"
@@ -46,10 +46,15 @@ help_local:
 	@echo
 	@echo "These commands need to be launched directly on current host/machine."
 	@echo
-	@echo "install_exe: Install the project with only execution requirement"
-	@echo "install: Install the project and developer's tools"
+	@echo "First on a dev env you will have to do:" 
+	@echo " - make install_venv && make install"
+	@echo "After without incident you will only have to use make install who will "
+	@echo "only check if venv exists before install project dependency"
 	@echo "install_venv: Create a local venv"
 	@echo "install_py: Install python requirements/dependency"
+	@echo "install_exe: Install the project with only execution requirement"
+	@echo "install: Install the project and developer's tools"
+	@echo "check_venv: Check if the local venv exists"
 	@echo
 	@echo "clean_venv: Clean/Destruct local venv"
 	@echo "clean_py: Clean/Destruct pyc, pyo, pycache files"
@@ -69,7 +74,7 @@ help_local:
 	@echo
 
 install_venv:
-	python3 -m venv $(VENV_NAME)
+	python$(pyv) -m venv $(VENV_NAME)
 	$(python) -m ensurepip
 	$(pip) install -U pip wheel setuptools
 
@@ -79,9 +84,12 @@ install_py:
 install_py_dev:
 	$(pip) install -r requirements.d/developers.txt
 
-install: install_venv install_py
+check_venv:
+	[ -d "${VENV_NAME}" ] && echo "venv $(VENV_NAME) found." || (echo "venv $(VENV_NAME) NOT FOUND." && exit 1)
 
-install_dev: install install_py_dev
+install: check_venv install_py
+
+install_dev: check_venv install_py install_py_dev
 
 
 clean_venv:
