@@ -21,3 +21,32 @@ These commands need to be launched directly on current host/machine.
  * flake8: Check syntax of python code
  * code_quality: Launch tools to fix/check code syntax
  * test_qa: Launch tools to fix/check/test the project from a cleaned installation
+
+##################
+# Docker/ Podman #
+##################
+
+These commands might need to be played with podman.
+
+podman-:podman-secret-create:
+
+podman-:podman-build-app
+
+podman-:podman-run-app
+
+podman-:podman-run-app-migrate
+
+podman-:podman-run-app-makemigration
+
+podman-:podman-run-app-test
+
+podman-:podman-run-app-manage
+
+podman-:podman-run-app-bash
+
+podman-:podman-run-app-shell
+
+podman-:podman-build-run-app
+
+podman-:podman-stop-ct
+
