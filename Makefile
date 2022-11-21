@@ -1,7 +1,7 @@
 # Variable to export is loaded from .env* file
 
 # WARNING: prohibit all confidential variable.
-# They have to be provided by docker secret volume
+# They have to be provided by podman secret volume
 # with a dedicated command to load them from .env_secret 
 
 include .env
@@ -127,3 +127,72 @@ test_qa_dev: clean install_dev code_quality django-test
 test_qa_exe: clean install django-migrate django-makemigrations django-serve
 
 test-qa: test_qa_dev test_qa_exe
+
+##################
+# Docker/ Podman #
+##################
+
+help_podman:
+	@echo "##################"
+	@echo "# Docker/ Podman #"
+	@echo "##################"
+	@echo
+	@echo "These commands might need to be played with podman."
+	@echo
+	@echo "podman-:podman-secret-create:"
+	@echo
+	@echo "podman-:podman-build-app"
+	@echo
+	@echo "podman-:podman-run-app"
+	@echo
+	@echo "podman-:podman-run-app-migrate"
+	@echo
+	@echo "podman-:podman-run-app-makemigration"
+	@echo
+	@echo "podman-:podman-run-app-test"
+	@echo
+	@echo "podman-:podman-run-app-manage"
+	@echo
+	@echo "podman-:podman-run-app-bash"
+	@echo
+	@echo "podman-:podman-run-app-shell"
+	@echo
+	@echo "podman-:podman-build-run-app"
+	@echo
+	@echo "podman-:podman-stop-ct"
+	@echo
+
+podman-secret-create:
+	podman secret create django-private-settings .env_private
+
+# Build podman image of the project and store it on your local repository
+podman-build-app:
+	podman build -t ${PODMAN_IMG_NAME} .
+
+# Run podman image already built and store it on your local repository
+podman-run-app: podman-stop-ct
+	podman run --rm -d --env DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE} -v django-project:/app/var:rw --secret django-private-settings -p ${PODMAN_EXPOSED_PORT}:${PODMAN_EXPOSED_PORT} ${PODMAN_IMG_NAME} runserver 0.0.0.0:${PODMAN_EXPOSED_PORT}
+
+podman-run-app-migrate: podman-stop-ct
+	podman run --rm --env DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE} -v django-project:/app/var:rw --secret django-private-settings ${PODMAN_IMG_NAME} migrate
+
+podman-run-app-makemigration: podman-stop-ct
+	podman run --rm --env DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE} -v django-project:/app/var:rw --secret django-private-settings ${PODMAN_IMG_NAME} makemigrations
+
+podman-run-app-test: podman-stop-ct
+	podman run --rm --env DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE} -v django-project:/app/var:rw --secret django-private-settings ${PODMAN_IMG_NAME} test
+
+podman-run-app-manage: podman-stop-ct
+	podman run --rm --env DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE} -v django-project:/app/var:rw --secret django-private-settings ${PODMAN_IMG_NAME}
+
+podman-run-app-bash: podman-stop-ct
+	podman run -i --rm --env DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE} -v django-project:/app/var:rw --secret django-private-settings --entrypoint bash ${PODMAN_IMG_NAME}
+
+podman-run-app-shell: podman-stop-ct
+	podman run -i --rm --env DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE} -v django-project:/app/var:rw --secret django-private-settings ${PODMAN_IMG_NAME} shell
+
+# Join build/run process to ensure work on new version
+podman-build-run-app: podman-build-app podman-stop-ct podman-run-app
+
+podman-stop-ct:
+	podman stop --all
