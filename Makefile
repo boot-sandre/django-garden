@@ -28,9 +28,7 @@ black=$(VENV)/bin/black
 flake8=$(VENV)/bin/flake8
 #---------------------------#
 
-help: help_local help_podman
-
-help_local:
+help:
 	@echo "##############################"
 	@echo "$(APP_NAME):$(APP_VERSION)"
 	@echo "##############################"
@@ -41,36 +39,8 @@ help_local:
 	@echo
 	@echo "Django settings: $(DJANGO_SETTINGS_MODULE)"
 	@echo
-	@echo "Local deployment"
+	@echo "Please read README.rst to know commands"
 	@echo "~~~~~~~~~~~~~~~~"
-	@echo
-	@echo "These commands need to be launched directly on current host/machine."
-	@echo
-	@echo "First on a dev env you will have to do:" 
-	@echo " - make install_venv && make install"
-	@echo "After without incident you will only have to use make install who will "
-	@echo "only check if venv exists before install project dependency"
-	@echo "install_venv: Create a local venv"
-	@echo "install_py: Install python requirements/dependency"
-	@echo "install_exe: Install the project with only execution requirement"
-	@echo "install: Install the project and developer's tools"
-	@echo "check_venv: Check if the local venv exists"
-	@echo
-	@echo "clean_venv: Clean/Destruct local venv"
-	@echo "clean_py: Clean/Destruct pyc, pyo, pycache files"
-	@echo "clean: Clean local project installation" 
-	@echo
-	@echo "django-serve: Start django"
-	@echo "django-migrate: Migrate django database"
-	@echo "django-makemigrations: Create django database migrations"
-	@echo "django-test: Run project unittest suite"
-	@echo
-	@echo "black: Re-format python code style"
-	@echo "flake8: Check syntax of python code"
-	@echo "code_quality: Launch tools to fix/check code syntax"
-	@echo "test_qa_dev: clean install_dev test-qa django-test"
-	@echo "test_qa_exe: clean install django-migrate django-makemigrations django-serve"
-	@echo "test_qa: Launch all code quality check"
 	@echo
 
 install_venv:
@@ -84,20 +54,31 @@ install_py:
 install_py_dev:
 	$(pip) install -r requirements.d/developers.txt
 
+install_var:
+	mkdir -p /var/db
+
+MESSAGE_VENV_NF="venv $(VENV_NAME) found. Please run make install_venv"
+
 check_venv:
-	[ -d "${VENV_NAME}" ] && echo "venv $(VENV_NAME) found." || (echo "venv $(VENV_NAME) NOT FOUND." && exit 1)
+	[ -d "${VENV_NAME}" ] && echo "$(MESSAGE_VENV_NF)" || (echo "venv $(VENV_NAME) NOT FOUND." && exit 1)
 
-install: check_venv install_py
+install: check_venv install_var install_py
 
-install_dev: check_venv install_py install_py_dev
-
+install_dev: check_venv install_var install_py install_py_dev
 
 clean_venv:
 	rm -rf $(VENV_NAME)
+
 clean_py:
 	find . -type d -name "__pycache__"|xargs rm -Rf
 	find . -name "*.py[o|c]" -delete
+
+clean_var:
+	rm -rf var
+
 clean: clean_venv clean_py
+
+full_clean: clean clean_var
 
 django-serve:
 	$(python) manage.py runserver
@@ -111,7 +92,6 @@ django-makemigrations:
 django-test:
 	$(pytest) project/ applications/
 	
-
 black:
 	$(black) project/ applications/
 
@@ -123,44 +103,14 @@ flake8:
 code_quality: black 
 # flake8
 
-test_qa_dev: clean install_dev code_quality django-test
-test_qa_exe: clean install django-migrate django-makemigrations django-serve
+test_qa_dev: clean install_venv install_var install_dev code_quality django-test
+test_qa_exe: clean install_venv install_var install django-migrate django-serve
 
 test-qa: test_qa_dev test_qa_exe
 
 ##################
 # Docker/ Podman #
 ##################
-
-help_podman:
-	@echo "##################"
-	@echo "# Docker/ Podman #"
-	@echo "##################"
-	@echo
-	@echo "These commands might need to be played with podman."
-	@echo
-	@echo "podman-:podman-secret-create:"
-	@echo
-	@echo "podman-:podman-build-app"
-	@echo
-	@echo "podman-:podman-run-app"
-	@echo
-	@echo "podman-:podman-run-app-migrate"
-	@echo
-	@echo "podman-:podman-run-app-makemigration"
-	@echo
-	@echo "podman-:podman-run-app-test"
-	@echo
-	@echo "podman-:podman-run-app-manage"
-	@echo
-	@echo "podman-:podman-run-app-bash"
-	@echo
-	@echo "podman-:podman-run-app-shell"
-	@echo
-	@echo "podman-:podman-build-run-app"
-	@echo
-	@echo "podman-:podman-stop-ct"
-	@echo
 
 podman-secret-create:
 	podman secret create django-private-settings .env_private

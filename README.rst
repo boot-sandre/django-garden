@@ -1,11 +1,53 @@
-Local deployment
-################
+*********
+* HOWTO *
+*********
+
+Start in legacy/Host env
+########################
+
+QA commands::
+        
+        make test-qa
+        make clean
+
+First run local host commands::
+
+        make install_venv
+        make install_dev
+        make django-test
+        make django-migrate
+        make django-run&
+        wget http://0.0.0.0:8080/test/ -O /tmp/index.html
+        cat /tmp/index.html
+        make clean
+
+Start with podman
+#################
+
+************
+* Makefile *
+************
+
+QA commands::
+
+        make podman-secret-create
+        make podman-build-app
+        make podman-run-app-test
+
+First run local host commands::
+
+        make podman-secret-create
+        make podman-build-run-app
+
+Legacy/Host deployment
+######################
 
 These commands need to be launched directly on current host/machine.
 
  * install_exe: Install the project with only execution requirement
  * install: Install the project and developer's tools
  * install_venv: Create a local venv
+ * install_var: Create directory structure of local ./var
  * install_py: Install python requirements/dependency
 
  * clean_venv: Clean/Destruct local venv
@@ -28,25 +70,25 @@ These commands need to be launched directly on current host/machine.
 
 These commands might need to be played with podman.
 
-podman-:podman-secret-create:
+podman-secret-create:
 
-podman-:podman-build-app
+podman-build-app
 
-podman-:podman-run-app
+podman-run-app
 
-podman-:podman-run-app-migrate
+podman-run-app-migrate
 
-podman-:podman-run-app-makemigration
+podman-run-app-makemigration
 
-podman-:podman-run-app-test
+podman-run-app-test
 
-podman-:podman-run-app-manage
+podman-run-app-manage
 
-podman-:podman-run-app-bash
+podman-run-app-bash
 
-podman-:podman-run-app-shell
+podman-run-app-shell
 
-podman-:podman-build-run-app
+podman-build-run-app
 
-podman-:podman-stop-ct
+podman-stop-ct
 
