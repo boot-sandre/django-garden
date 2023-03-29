@@ -1,6 +1,11 @@
-from typing import Dict, List, Any, Union
+from typing import Dict, List, Any
 
+from typing import Union
 from ninja import Schema
+
+
+class TimeEventContract(Schema):
+    name: Union[str, None]
 
 
 class OkResponseContract(Schema):

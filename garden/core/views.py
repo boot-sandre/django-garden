@@ -1,6 +1,6 @@
 import datetime
 
-from django.http import HttpResponse, HttpRequest
+from django.http import HttpResponse
 
 
 def std_html_endpoint(request):

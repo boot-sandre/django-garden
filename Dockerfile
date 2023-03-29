@@ -8,8 +8,7 @@ ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
 
 # Install builder requirements
-RUN --mount=type=cache,target=/var/cache/apt \
-    rm /etc/apt/apt.conf.d/docker-clean && \
+RUN rm /etc/apt/apt.conf.d/docker-clean && \
     apt-get update && apt-get install -y --no-install-recommends gcc apt-file dpkg-dev fakeroot build-essential \
 	devscripts debhelper python3 python3-dev python3-pip python3-wheel python3-setuptools libpq-dev python3-apt && \
     apt-get clean
@@ -17,7 +16,7 @@ RUN --mount=type=cache,target=/var/cache/apt \
 # Build wheel
 COPY ./requirements.d /requirements.d/
 COPY ./requirements.txt /
-RUN --mount=type=cache,target=/root/.cache/pip python3 -m pip wheel --wheel-dir /wheels -r requirements.txt
+RUN python3 -m pip wheel --wheel-dir /wheels -r requirements.txt
 
 ########################################
 # Second stage to building final image #
@@ -40,13 +39,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends python3 python3
     apt-get clean
 
 # Copy django project
+COPY . /app
+
 WORKDIR /app
-COPY ./project ./project
-COPY ./applications ./applications
-COPY ./manage.py .
 
 # Prepare execution
-ENV APP_PATH /app
-ENV PYTHONPATH "${PYTHONPATH}:/app/:/app/applications/"
+ENV APP_PATH /app/garden/
+ENV PYTHONPATH "${PYTHONPATH}:/app/:/app/garden/"
 ENTRYPOINT ["python3", "/app/manage.py"]
 CMD ["help"]

@@ -1,11 +1,11 @@
 from django.http import HttpResponse, HttpRequest
 
-
-from applications.core_prj.schemas import TimeEventContract
-
 from ninja import Router
 from ninja import File
 from ninja.files import UploadedFile
+
+from garden.core.schemas import TimeEventContract
+
 
 router = Router()
 

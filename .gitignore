@@ -27,8 +27,8 @@ __pycache__
 .venv*/
 **__pycache__**
 # frontend build
-project/webapp_statics/frontend
-project/templates/index.html
+app/project/webapp_statics/frontend
+app/project/templates/index.html
 
 # Various directory index, temp file and editor's config
 *.DS_Store

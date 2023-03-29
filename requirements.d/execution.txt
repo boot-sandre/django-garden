@@ -1,3 +1,6 @@
 django
 django-ninja
+django-environ
 importlib-metadata<4.3
+# dev tools
+django-extensions
