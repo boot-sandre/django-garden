@@ -4,3 +4,4 @@ django-environ
 importlib-metadata<4.3
 # dev tools
 django-extensions
+remote-pdb

@@ -1,7 +1,7 @@
 ########################################
 # First stage to building python wheel #
 ########################################
-FROM debian:buster-slim as builder_wheel
+FROM python:3.9 as builder_wheel
 
 # Configure python environnement
 ENV PYTHONUNBUFFERED 1
@@ -21,7 +21,7 @@ RUN python3 -m pip wheel --wheel-dir /wheels -r requirements.txt
 ########################################
 # Second stage to building final image #
 ########################################
-FROM debian:buster-slim as django-api
+FROM python:3.9 as django-api
 # Retrieve from first stage precompiled python wheel distribution
 # Deb packaging is not ready yet. If we only have ref to builder_wheels
 # image, builder_deb image, the second stage, 
@@ -30,6 +30,9 @@ COPY --from=builder_wheel /wheels /wheels
 # Configure python environnement
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONBREAKPOINT=remote_pdb.set_trace
+ENV REMOTE_PDB_HOST=0.0.0.0
+ENV REMOTE_PDB_PORT=4444
 
 RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-pip libpq5 && \
     pip3 install --no-cache /wheels/*.whl && \
@@ -40,7 +43,8 @@ RUN apt-get update && apt-get install -y --no-install-recommends python3 python3
 
 # Copy django project
 COPY . /app
-
+RUN mkdir -p /app/parts/static && \
+    mkdir -p /app/var/db
 WORKDIR /app
 
 # Prepare execution

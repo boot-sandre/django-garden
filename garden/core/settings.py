@@ -9,22 +9,23 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
-
 from pathlib import Path
 
-import environ
+from environ import environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
-BASE_DIR = Path(__file__).resolve(strict=True).parent.parent
+BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 APPS_DIR = BASE_DIR / "garden"
+
 VAR_DIR = BASE_DIR / "var"
+DB_DIR = VAR_DIR / "db"
 PARTS_DIR = BASE_DIR / "parts"
 
 env = environ.Env(
     # set casting, default value
     DEBUG=(bool, False)
 )
-env.read_env(str(BASE_DIR / ".env_dev"))
+env.read_env(str(BASE_DIR / ".env"))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -105,7 +106,7 @@ MANAGERS = ADMINS
 # more details on how to customize your logging configuration.
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env("SECRET_KEY")
+SECRET_KEY = "f56sefesf6sf86secsDFv^$ù*ùsf4sfs*ùss:!c:!s7f75vf7r5fdv75fv"
 ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1", "localhost"]
 
 
@@ -162,7 +163,7 @@ TEMPLATES = [
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.sqlite3",
-        "NAME": VAR_DIR / "db" / "db.sqlite3",
+        "NAME": str(DB_DIR / "db.sqlite3"),
     }
 }
 
@@ -188,10 +189,11 @@ AUTH_PASSWORD_VALIDATORS = [
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-root
 STATIC_ROOT = str(PARTS_DIR / "static")
+
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-url
 STATIC_URL = "/static/"
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
-STATICFILES_DIRS = [str(APPS_DIR / "static")]
+STATICFILES_DIRS = []
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
 STATICFILES_FINDERS = [
     "django.contrib.staticfiles.finders.FileSystemFinder",
