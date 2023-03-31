@@ -1,4 +1,4 @@
-
+from django.conf import settings
 from django.db import models
 
 
@@ -18,6 +18,7 @@ class IdentityNameMeta(models.Model):
     class Meta:
         abstract = True
 
+
 STATES_CMS = [
     ("delete", "Object is deleted"),
     ("draft", "Object pending to be publish"),
@@ -34,7 +35,7 @@ class StateMeta(models.Model):
 
     @property
     def state(self):
-        """ Return tuple with key/message"""
+        """Return tuple with key/message"""
         if self.is_deleted:
             return STATES_CMS[0]
         elif self.is_publish:
@@ -51,6 +52,16 @@ class StateMeta(models.Model):
         """Safe delete a model instance"""
         self.is_deleted = False
         self.save()
+
+    def publish(self):
+        if not self.is_deleted and not self.is_publish:
+            self.is_publish = True
+            self.save()
+
+    def unpublish(self):
+        if not self.is_deleted and self.is_publish:
+            self.is_publish = False
+            self.save()
 
 
 class TimeElementMeta(models.Model):
@@ -76,15 +87,9 @@ class ElementMeta(IdentityTitleMeta, StateMeta, RevisionElementMeta, TimeElement
         return f"[{self.rev}] {self.title[:25]} is_active: {self.is_active} | is_publish: {self.is_publish}"
 
 
-class ObjectMeta(IdentityNameMeta, StateMeta, TimeElementMeta):
-    class Meta:
-        abstract = True
-
-    def __str__(self):
-        return f"[{self.rev}] {self.name} is_active: {self.is_active} | is_publish: {self.is_publish}"
-
-
 class Page(ElementMeta):
+    content = models.TextField(null=True, blank=True)
+
     class Meta:
         abstract = False
 
@@ -96,19 +101,33 @@ class Chapter(ElementMeta):
         abstract = False
 
 
-class Picture(ObjectMeta):
+class FileMeta(models.Model):
+    file = models.FileField(null=True, blank=True)
 
+    class Meta:
+        abstract = True
+
+
+class ObjectMeta(IdentityNameMeta, StateMeta, TimeElementMeta):
+    class Meta:
+        abstract = True
+
+    def __str__(self):
+        return f"[{self.rev}] {self.name} is_active: {self.is_active} | is_publish: {self.is_publish}"
+
+
+class Picture(ObjectMeta, FileMeta):
     class Meta:
         abstract = False
 
 
-class Document(ObjectMeta):
-
+class Document(ObjectMeta, FileMeta):
     class Meta:
         abstract = False
 
 
 class Link(ObjectMeta):
+    url = models.URLField(blank=False, null=True)
 
     class Meta:
         abstract = False

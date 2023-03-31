@@ -26,7 +26,7 @@ env = load_environ.Env(
     # set casting, default value
     DEBUG=(bool, False)
 )
-env.prefix = 'GARDEN_'
+env.prefix = "GARDEN_"
 
 # Project must have a std .env without confidential settings
 env.read_env(str(BASE_DIR / ".env"))
