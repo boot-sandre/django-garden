@@ -11,16 +11,15 @@ https://docs.djangoproject.com/en/4.1/ref/settings/
 """
 import os
 from pathlib import Path
-
 from environ import environ as load_environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
 APPS_DIR = BASE_DIR / "garden"
 
+PARTS_DIR = BASE_DIR / "parts"
 VAR_DIR = BASE_DIR / "var"
 DB_DIR = VAR_DIR / "db"
-PARTS_DIR = BASE_DIR / "parts"
 
 # Use django environ to set django settings
 env = load_environ.Env(
@@ -35,10 +34,9 @@ env.read_env(str(BASE_DIR / ".env"))
 garden_secret_ref = os.path.join(env.str("SECRET_PATH"), env.str("SECRET_NAME"))
 # Load confidential secret from secret volume
 env.read_env(garden_secret_ref)
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
-
-
 # GENERAL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
@@ -130,6 +128,8 @@ INSTALLED_APPS = [
     "django.forms",
     "ninja",
     "garden.core",
+    "garden.core_api",
+    "garden.cms",
 ]
 
 
