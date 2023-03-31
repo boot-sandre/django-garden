@@ -9,9 +9,10 @@ https://docs.djangoproject.com/en/4.1/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/4.1/ref/settings/
 """
+import os
 from pathlib import Path
 
-from environ import environ
+from environ import environ as load_environ
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
@@ -21,14 +22,19 @@ VAR_DIR = BASE_DIR / "var"
 DB_DIR = VAR_DIR / "db"
 PARTS_DIR = BASE_DIR / "parts"
 
-env = environ.Env(
+# Use django environ to set django settings
+env = load_environ.Env(
     # set casting, default value
     DEBUG=(bool, False)
 )
-breakpoint()
-env.read_env(str(BASE_DIR / ".env"))
-env.read_env(env.str("GARDEN_SECRET_REF"))
+env.prefix = 'GARDEN_'
 
+# Project must have a std .env without confidential settings
+env.read_env(str(BASE_DIR / ".env"))
+# .env must have secret references to load confidential settings
+garden_secret_ref = os.path.join(env.str("SECRET_PATH"), env.str("SECRET_NAME"))
+# Load confidential secret from secret volume
+env.read_env(garden_secret_ref)
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
 
@@ -36,7 +42,7 @@ env.read_env(env.str("GARDEN_SECRET_REF"))
 # GENERAL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
-DEBUG = env.bool("DJANGO_DEBUG", False)
+DEBUG = env.bool("DEBUG", False)
 # Local time zone. Choices are
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # though not all of them may be available with every OS.
@@ -86,7 +92,7 @@ X_FRAME_OPTIONS = "DENY"
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
 EMAIL_BACKEND = env(
-    "DJANGO_EMAIL_BACKEND",
+    "EMAIL_BACKEND",
     default="django.core.mail.backends.smtp.EmailBackend",
 )
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-timeout
@@ -108,7 +114,7 @@ MANAGERS = ADMINS
 # more details on how to customize your logging configuration.
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = env.str("SECRET_KEY")
+SECRET_KEY = env.str("SECRET_KEY", "SECRETTOOVERRIDE")
 ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1", "localhost"]
 
 

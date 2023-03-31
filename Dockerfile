@@ -49,7 +49,6 @@ WORKDIR /app
 
 # Prepare execution
 ENV APP_PATH /app/garden/
-ENV PYTHONPATH "${PYTHONPATH}:/app"
 ENV PYTHONBREAKPOINT=ipdb.set_trace
 ENTRYPOINT ["python3", "manage.py"]
 CMD ["help"]
