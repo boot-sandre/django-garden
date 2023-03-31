@@ -30,9 +30,6 @@ COPY --from=builder_wheel /wheels /wheels
 # Configure python environnement
 ENV PYTHONUNBUFFERED 1
 ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONBREAKPOINT=remote_pdb.set_trace
-ENV REMOTE_PDB_HOST=0.0.0.0
-ENV REMOTE_PDB_PORT=4444
 
 RUN apt-get update && apt-get install -y --no-install-recommends python3 python3-pip libpq5 && \
     pip3 install --no-cache /wheels/*.whl && \
@@ -42,13 +39,17 @@ RUN apt-get update && apt-get install -y --no-install-recommends python3 python3
     apt-get clean
 
 # Copy django project
-COPY . /app
+ADD ./garden /app/garden
+COPY ./.env /app/.env
+COPY ./manage.py /app/manage.py
+
 RUN mkdir -p /app/parts/static && \
     mkdir -p /app/var/db
 WORKDIR /app
 
 # Prepare execution
 ENV APP_PATH /app/garden/
-ENV PYTHONPATH "${PYTHONPATH}:/app/:/app/garden/"
-ENTRYPOINT ["python3", "/app/manage.py"]
+ENV PYTHONPATH "${PYTHONPATH}:/app"
+ENV PYTHONBREAKPOINT=ipdb.set_trace
+ENTRYPOINT ["python3", "manage.py"]
 CMD ["help"]

@@ -25,7 +25,9 @@ env = environ.Env(
     # set casting, default value
     DEBUG=(bool, False)
 )
+breakpoint()
 env.read_env(str(BASE_DIR / ".env"))
+env.read_env(env.str("GARDEN_SECRET_REF"))
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/4.1/howto/deployment/checklist/
@@ -106,7 +108,7 @@ MANAGERS = ADMINS
 # more details on how to customize your logging configuration.
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = "f56sefesf6sf86secsDFv^$ù*ùsf4sfs*ùss:!c:!s7f75vf7r5fdv75fv"
+SECRET_KEY = env.str("SECRET_KEY")
 ALLOWED_HOSTS = ["0.0.0.0", "127.0.0.1", "localhost"]
 
 

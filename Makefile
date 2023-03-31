@@ -125,28 +125,28 @@ podman-garden-build:
 
 # Run podman image already built and store it on your local repository
 podman-garden-run: podman-stop-ct
-	podman run --rm -it --env DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}  -v ${GARDEN_VOLUME_VAR}:/app/var:rw -v ${GARDEN_VOLUME_PARTS}:/app/parts:rw --secret ${GARDEN_SECRET_NAME} -p ${GARDEN_EXPOSED_PORT}:${GARDEN_EXPOSED_PORT} -p ${GARDEN_PDB_PORT}:${GARDEN_PDB_PORT} ${GARDEN_IMG_LATEST_NAME} runserver 0.0.0.0:${GARDEN_EXPOSED_PORT}
+	podman run --rm -it --env DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}  -v ${GARDEN_VOLUME_VAR}:/app/var:rw -v ${GARDEN_VOLUME_PARTS}:/app/parts:rw --secret ${GARDEN_SECRET_NAME} -p ${GARDEN_EXPOSED_PORT}:${GARDEN_EXPOSED_PORT} ${GARDEN_IMG_LATEST_NAME} runserver 0.0.0.0:${GARDEN_EXPOSED_PORT}
 
 podman-garden-static: podman-stop-ct
 	podman run --rm --env DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE} -v ${GARDEN_VOLUME_VAR}:/app/var:rw -v ${GARDEN_VOLUME_PARTS}:/app/parts:rw --secret ${GARDEN_SECRET_NAME} -p ${GARDEN_EXPOSED_PORT}:${GARDEN_EXPOSED_PORT} -p ${GARDEN_PDB_PORT}:${GARDEN_PDB_PORT} ${GARDEN_IMG_LATEST_NAME} collectstatic -c --noinput --no-color
 
 podman-garden-migrate: podman-stop-ct
-	podman run --rm --env DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE} -v ${GARDEN_VOLUME_VAR}:/app/var:rw -v ${GARDEN_VOLUME_PARTS}:/app/parts:rw --secret ${GARDEN_SECRET_NAME} -p ${GARDEN_EXPOSED_PORT}:${GARDEN_EXPOSED_PORT} -p ${GARDEN_PDB_PORT}:${GARDEN_PDB_PORT} ${GARDEN_IMG_LATEST_NAME} migrate
+	podman run --rm --env DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE} -v ${GARDEN_VOLUME_VAR}:/app/var:rw -v ${GARDEN_VOLUME_PARTS}:/app/parts:rw --secret ${GARDEN_SECRET_NAME} -p ${GARDEN_EXPOSED_PORT}:${GARDEN_EXPOSED_PORT} ${GARDEN_IMG_LATEST_NAME} migrate
 
-podman-run-app-makemigration: podman-stop-ct
-	podman run --rm --env DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE} -v pdn-var-vol:/app/var:rw --secret django-private-settings ${PODMAN_IMG_NAME} makemigrations
+podman-garden-makemigration: podman-stop-ct
+	podman run --rm --env DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE} -v ${GARDEN_VOLUME_VAR}:/app/var:rw -v ${GARDEN_VOLUME_PARTS}:/app/parts:rw --secret ${GARDEN_SECRET_NAME} -p ${GARDEN_EXPOSED_PORT}:${GARDEN_EXPOSED_PORT} ${GARDEN_IMG_LATEST_NAME} makemigrations
 
-podman-run-app-test: podman-stop-ct
-	podman run --rm --env DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE} -v pdn-var-vol:/app/var:rw --secret django-private-settings ${PODMAN_IMG_NAME} test
+podman-garden-test: podman-stop-ct
+	podman run --rm --env DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE} -v ${GARDEN_VOLUME_VAR}:/app/var:rw -v ${GARDEN_VOLUME_PARTS}:/app/parts:rw --secret ${GARDEN_SECRET_NAME} -p ${GARDEN_EXPOSED_PORT}:${GARDEN_EXPOSED_PORT} ${GARDEN_IMG_LATEST_NAME} test
 
-podman-run-app-manage: podman-stop-ct
-	podman run --rm --env DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE} -v pdn-var-vol:/app/var:rw --secret django-private-settings ${PODMAN_IMG_NAME}
+podman-garden-manage: podman-stop-ct
+	podman run --rm --env DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE} -v ${GARDEN_VOLUME_VAR}:/app/var:rw -v ${GARDEN_VOLUME_PARTS}:/app/parts:rw --secret ${GARDEN_SECRET_NAME} -p ${GARDEN_EXPOSED_PORT}:${GARDEN_EXPOSED_PORT} ${GARDEN_IMG_LATEST_NAME}
 
 podman-garden-bash: podman-stop-ct
 	podman run --rm -it --env DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE} -v ${GARDEN_VOLUME_VAR}:/app/var:rw -v ${GARDEN_VOLUME_PARTS}:/app/parts:rw --secret ${GARDEN_SECRET_NAME} -p ${GARDEN_EXPOSED_PORT}:${GARDEN_EXPOSED_PORT} -p ${GARDEN_PDB_PORT}:${GARDEN_PDB_PORT}  --entrypoint bash ${GARDEN_IMG_LATEST_NAME}
 
 podman-garden-shell: podman-stop-ct
-	podman run --rm -it --env DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE} -v ${GARDEN_VOLUME_VAR}:/app/var:rw -v ${GARDEN_VOLUME_PARTS}:/app/parts:rw --secret ${GARDEN_SECRET_NAME} -p ${GARDEN_EXPOSED_PORT}:${GARDEN_EXPOSED_PORT} -p ${GARDEN_PDB_PORT}:${GARDEN_PDB_PORT} ${GARDEN_IMG_LATEST_NAME} shell
+	podman run --rm -it --env DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE} -v ${GARDEN_VOLUME_VAR}:/app/var:rw -v ${GARDEN_VOLUME_PARTS}:/app/parts:rw --secret ${GARDEN_SECRET_NAME} -p ${GARDEN_EXPOSED_PORT}:${GARDEN_EXPOSED_PORT} ${GARDEN_IMG_LATEST_NAME} shell
 
 # Join build/run process to ensure work on new version
 podman-build-run-app: podman-build-app podman-stop-ct podman-run-app
