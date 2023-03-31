@@ -4,7 +4,7 @@ from ninja import Router
 from ninja import File
 from ninja.files import UploadedFile
 
-from garden.core_api.schemas import TimeEventContract
+from garden.core_ninja.schemas import TimeEventContract
 
 
 router = Router()

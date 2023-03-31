@@ -15,7 +15,7 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from garden.core_api.api import api
+from garden.core_ninja.api import api
 from garden.core import views
 
 

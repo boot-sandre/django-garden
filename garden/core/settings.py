@@ -128,7 +128,7 @@ INSTALLED_APPS = [
     "django.forms",
     "ninja",
     "garden.core",
-    "garden.core_api",
+    "garden.core_ninja",
     "garden.cms",
 ]
 
