@@ -1,26 +1,19 @@
-"""project URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/4.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
-from django.urls import path
-from garden.core_ninja.api import api
+from django.urls import path, include
 from garden.core import views
 
 
-urlpatterns = [
+url_native_patterns = [
     path("admin/", admin.site.urls),
-    path("api/", api.urls),
     path("webtest/", views.std_html_endpoint),
+    # path("", include("garden.cms.urls")),
 ]
+
+
+url_api_patterns = [
+    # Ninja api app
+    path("", include("garden.core_ninja.urls")),
+]
+
+# Set django urlpatterns
+urlpatterns = url_native_patterns + url_api_patterns
