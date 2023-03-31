@@ -1,5 +1,7 @@
 from django.db import models
 
+from garden.core_ninja.exceptions import GardenApplicationError
+
 
 class IdentityTitleMeta(models.Model):
 
@@ -44,13 +46,21 @@ class StateMeta(models.Model):
 
     def safe_delete(self):
         """Safe delete a model instance"""
+        if self.is_deleted:
+            raise GardenApplicationError("Page is already unactivated.")
+        if self.is_publish:
+            raise GardenApplicationError(
+                "Page is published. Please unpublish it before inactivate it"
+            )
         self.is_deleted = True
-        self.save()
+        self.save(update_fields=["is_deleted"])
 
     def safe_restore(self):
         """Safe delete a model instance"""
+        if not self.is_deleted:
+            raise GardenApplicationError("Page is already activated")
         self.is_deleted = False
-        self.save()
+        self.save(update_fields=["is_deleted"])
 
     def publish(self):
         if not self.is_deleted and not self.is_publish:

@@ -4,6 +4,6 @@ from typing import Union
 from ninja import Schema
 
 
-class SuccessResponseContract(Schema):
+class ResponseContract(Schema):
     success: bool
     message: Union[str, None]
