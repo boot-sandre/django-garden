@@ -3,7 +3,7 @@ from typing import Dict, List, Any
 from typing import Union
 from ninja import Schema, ModelSchema
 
-from garden.cms.models import Page, Chapter
+from garden.cms.models import Page
 
 
 meta_fields = ["is_publish", "is_deleted", "created_at", "updated_at", "rev"]
@@ -25,15 +25,3 @@ class PageIdentifierContract(ModelSchema):
 class PageFullContract(ModelSchema):
     class Config(PageEditContract.Config):
         model_fields = ["id"] + page_content_fields + meta_fields
-
-
-class ChapterDataContract(ModelSchema):
-    class Config:
-        model = Chapter
-        model_fields = share_content_fields
-
-
-class ChapterContract(ModelSchema):
-    class Config:
-        model = Chapter
-        model_fields = ["id"] + share_content_fields

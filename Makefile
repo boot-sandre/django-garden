@@ -90,7 +90,10 @@ django-makemigrations:
 
 django-test:
 	$(pytest)
-	
+
+django-superuser:
+	$(python) manage.py createsuperuser --settings garden.core.settings
+
 black:
 	$(black) garden 
 
@@ -117,6 +120,9 @@ podman-garden-create-secret:
 podman-garden-create-volumes:
 	podman volume create --ignore ${GARDEN_VOLUME_VAR}
 	podman volume create --ignore ${GARDEN_VOLUME_PARTS}
+
+podman-garden-superuser:
+	podman run -it --env DJANGO_SETTINGS_MODULE=${GARDEN_SETTINGS_MODULE} -v ${GARDEN_VOLUME_VAR}:/app/var:rw -v ${GARDEN_VOLUME_PARTS}:/app/parts:rw --secret ${GARDEN_SECRET_NAME} ${GARDEN_APP_NAME}:latest createsuperuser
 # Build podman image of the project and store it on your local repository
 
 podman-garden-build:
@@ -124,31 +130,31 @@ podman-garden-build:
 
 # Run podman image already built and store it on your local repository
 podman-garden-run: podman-stop-ct
-	podman run --rm -it --env DJANGO_SETTINGS_MODULE=${GARDEN_SETTINGS_MODULE}  -v ${GARDEN_VOLUME_VAR}:/app/var:rw -v ${GARDEN_VOLUME_PARTS}:/app/parts:rw --secret ${GARDEN_SECRET_NAME} -p ${GARDEN_EXPOSED_PORT}:${GARDEN_EXPOSED_PORT} ${GARDEN_APP_NAME}:latest runserver 0.0.0.0:${GARDEN_EXPOSED_PORT}
+	podman run -it --env DJANGO_SETTINGS_MODULE=${GARDEN_SETTINGS_MODULE}  -v ${GARDEN_VOLUME_VAR}:/app/var:rw -v ${GARDEN_VOLUME_PARTS}:/app/parts:rw --secret ${GARDEN_SECRET_NAME} -p ${GARDEN_EXPOSED_PORT}:${GARDEN_EXPOSED_PORT} ${GARDEN_APP_NAME}:latest runserver 0.0.0.0:${GARDEN_EXPOSED_PORT}
 
 podman-garden-static: podman-stop-ct
-	podman run --rm --env DJANGO_SETTINGS_MODULE=${GARDEN_SETTINGS_MODULE} -v ${GARDEN_VOLUME_VAR}:/app/var:rw -v ${GARDEN_VOLUME_PARTS}:/app/parts:rw --secret ${GARDEN_SECRET_NAME} ${GARDEN_APP_NAME}:latest collectstatic -c --noinput --no-color
+	podman run --env DJANGO_SETTINGS_MODULE=${GARDEN_SETTINGS_MODULE} -v ${GARDEN_VOLUME_VAR}:/app/var:rw -v ${GARDEN_VOLUME_PARTS}:/app/parts:rw --secret ${GARDEN_SECRET_NAME} ${GARDEN_APP_NAME}:latest collectstatic -c --noinput --no-color
 
 podman-garden-migrate: podman-stop-ct
-	podman run --rm --env DJANGO_SETTINGS_MODULE=${GARDEN_SETTINGS_MODULE} -v ${GARDEN_VOLUME_VAR}:/app/var:rw -v ${GARDEN_VOLUME_PARTS}:/app/parts:rw --secret ${GARDEN_SECRET_NAME} ${GARDEN_APP_NAME}:latest migrate
+	podman run --env DJANGO_SETTINGS_MODULE=${GARDEN_SETTINGS_MODULE} -v ${GARDEN_VOLUME_VAR}:/app/var:rw -v ${GARDEN_VOLUME_PARTS}:/app/parts:rw --secret ${GARDEN_SECRET_NAME} ${GARDEN_APP_NAME}:latest migrate
 
 podman-garden-makemigration: podman-stop-ct
-	podman run --rm --env DJANGO_SETTINGS_MODULE=${GARDEN_SETTINGS_MODULE} -v ${GARDEN_VOLUME_VAR}:/app/var:rw -v ${GARDEN_VOLUME_PARTS}:/app/parts:rw --secret ${GARDEN_SECRET_NAME} ${GARDEN_APP_NAME}:latest makemigrations
+	podman run --env DJANGO_SETTINGS_MODULE=${GARDEN_SETTINGS_MODULE} -v ${GARDEN_VOLUME_VAR}:/app/var:rw -v ${GARDEN_VOLUME_PARTS}:/app/parts:rw --secret ${GARDEN_SECRET_NAME} ${GARDEN_APP_NAME}:latest makemigrations
 
 podman-garden-test: podman-stop-ct
-	podman run --rm --env DJANGO_SETTINGS_MODULE=${GARDEN_SETTINGS_MODULE} -v ${GARDEN_VOLUME_VAR}:/app/var:rw -v ${GARDEN_VOLUME_PARTS}:/app/parts:rw --secret ${GARDEN_SECRET_NAME} ${GARDEN_APP_NAME}:latest test
+	podman run --env DJANGO_SETTINGS_MODULE=${GARDEN_SETTINGS_MODULE} -v ${GARDEN_VOLUME_VAR}:/app/var:rw -v ${GARDEN_VOLUME_PARTS}:/app/parts:rw --secret ${GARDEN_SECRET_NAME} ${GARDEN_APP_NAME}:latest test
 
 podman-garden-manage: podman-stop-ct
-	podman run --rm --env DJANGO_SETTINGS_MODULE=${GARDEN_SETTINGS_MODULE} -v ${GARDEN_VOLUME_VAR}:/app/var:rw -v ${GARDEN_VOLUME_PARTS}:/app/parts:rw --secret ${GARDEN_SECRET_NAME} ${GARDEN_APP_NAME}:latest
+	podman run --env DJANGO_SETTINGS_MODULE=${GARDEN_SETTINGS_MODULE} -v ${GARDEN_VOLUME_VAR}:/app/var:rw -v ${GARDEN_VOLUME_PARTS}:/app/parts:rw --secret ${GARDEN_SECRET_NAME} ${GARDEN_APP_NAME}:latest
 
 podman-garden-bash: podman-stop-ct
-	podman run --rm -it --env DJANGO_SETTINGS_MODULE=${GARDEN_SETTINGS_MODULE} -v ${GARDEN_VOLUME_VAR}:/app/var:rw -v ${GARDEN_VOLUME_PARTS}:/app/parts:rw --secret ${GARDEN_SECRET_NAME} --entrypoint bash ${GARDEN_APP_NAME}:latest
+	podman run -it --env DJANGO_SETTINGS_MODULE=${GARDEN_SETTINGS_MODULE} -v ${GARDEN_VOLUME_VAR}:/app/var:rw -v ${GARDEN_VOLUME_PARTS}:/app/parts:rw --secret ${GARDEN_SECRET_NAME} --entrypoint bash ${GARDEN_APP_NAME}:latest
 
 podman-garden-shell: podman-stop-ct
-	podman run --rm -it --env DJANGO_SETTINGS_MODULE=${GARDEN_SETTINGS_MODULE} -v ${GARDEN_VOLUME_VAR}:/app/var:rw -v ${GARDEN_VOLUME_PARTS}:/app/parts:rw --secret ${GARDEN_SECRET_NAME} ${GARDEN_APP_NAME}:latest shell
+	podman run -it --env DJANGO_SETTINGS_MODULE=${GARDEN_SETTINGS_MODULE} -v ${GARDEN_VOLUME_VAR}:/app/var:rw -v ${GARDEN_VOLUME_PARTS}:/app/parts:rw --secret ${GARDEN_SECRET_NAME} ${GARDEN_APP_NAME}:latest shell
 
 # Join build/run process to ensure work on new version
-podman-build-run-app: podman-build-app podman-stop-ct podman-run-app
+podman-build-run-app: podman-build-app podman-run-app
 
 podman-stop-ct:
 	podman stop --all
