@@ -11,19 +11,19 @@ share_content_fields = ["title", "description"]
 page_content_fields = share_content_fields + ["content"]
 
 
-class PageContract(ModelSchema):
+class PageEditContract(ModelSchema):
     class Config:
         model = Page
         model_fields = page_content_fields
 
 
 class PageIdentifierContract(ModelSchema):
-    class Config(PageContract.Config):
+    class Config(PageEditContract.Config):
         model_fields = ["id"] + page_content_fields
 
 
 class PageFullContract(ModelSchema):
-    class Config(PageContract.Config):
+    class Config(PageEditContract.Config):
         model_fields = ["id"] + page_content_fields + meta_fields
 
 

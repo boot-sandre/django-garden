@@ -3,7 +3,7 @@ from ninja import Router
 
 from garden.cms.models import Page
 from garden.cms_ninja.schemas import (
-    PageContract,
+    PageEditContract,
     PageIdentifierContract,
     PageFullContract,
 )
@@ -56,7 +56,7 @@ def get_page(request, page_id: int):
         200: PageIdentifierContract,
     },
 )
-def create_page(request, payload: PageContract):
+def create_page(request, payload: PageEditContract):
     return Page.objects.create(**payload.dict())
 
 
@@ -66,7 +66,7 @@ def create_page(request, payload: PageContract):
         200: PageIdentifierContract,
     },
 )
-def update_page(request, page_id: int, payload: PageContract):
+def update_page(request, page_id: int, payload: PageEditContract):
     page_obj = Page.objects.get(pk=page_id)
     update_items = payload.dict()
     update_keys = update_items.keys()
@@ -78,7 +78,7 @@ def update_page(request, page_id: int, payload: PageContract):
 
 
 @router.delete(
-    "/page/delete/{page_id}",
+    "/page/safe_delete/{page_id}",
     response={
         200: ResponseContract,
         405: ResponseContract,
@@ -91,7 +91,7 @@ def safe_delete(request, page_id: int):
 
 
 @router.delete(
-    "/page/restore/{page_id}",
+    "/page/safe_restore/{page_id}",
     response={
         200: ResponseContract,
         405: ResponseContract,
