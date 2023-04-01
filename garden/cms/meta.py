@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.db import models
 from garden.core_ninja.exceptions import GardenApplicationError
 
@@ -113,3 +114,11 @@ class FileMeta(models.Model):
     class Meta:
         abstract = True
 
+class UserLinkMeta(models.Model):
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        abstract = True

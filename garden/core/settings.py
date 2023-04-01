@@ -41,6 +41,8 @@ env.read_env(garden_secret_ref)
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
 DEBUG = env.bool("DEBUG", False)
+
+AUTH_USER_MODEL = "core.GardenUser"
 # Local time zone. Choices are
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # though not all of them may be available with every OS.
@@ -101,7 +103,7 @@ EMAIL_TIMEOUT = 5
 # Django Admin URL.
 ADMIN_URL = "admin/"
 # https://docs.djangoproject.com/en/dev/ref/settings/#admins
-ADMINS = [("""ANDRE Simon""", "sandre@dogshouse-ro.org")]
+ADMINS = [("ANDRE Simon", "sandre@dogshouse-ro.org")]
 # https://docs.djangoproject.com/en/dev/ref/settings/#managers
 MANAGERS = ADMINS
 
@@ -130,6 +132,7 @@ INSTALLED_APPS = [
     "garden.core",
     "garden.core_ninja",
     "garden.cms",
+    "garden.cms_ninja",
 ]
 
 
