@@ -42,7 +42,6 @@ env.read_env(garden_secret_ref)
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
 DEBUG = env.bool("DEBUG", False)
 
-AUTH_USER_MODEL = "core.GardenUser"
 # Local time zone. Choices are
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # though not all of them may be available with every OS.
@@ -72,9 +71,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # URLS
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#root-urlconf
-ROOT_URLCONF = "garden.core.urls"
+ROOT_URLCONF = "garden.garden.urls"
 # https://docs.djangoproject.com/en/dev/ref/settings/#wsgi-application
-WSGI_APPLICATION = "garden.core.wsgi.application"
+WSGI_APPLICATION = "garden.garden.wsgi.application"
 
 
 # SECURITY
@@ -88,12 +87,16 @@ SECURE_BROWSER_XSS_FILTER = True
 # https://docs.djangoproject.com/en/dev/ref/settings/#x-frame-options
 X_FRAME_OPTIONS = "DENY"
 
+# User loging configuration
+AUTH_USER_MODEL = "cms_user.GardenUser"
+
+
 # EMAIL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-backend
 EMAIL_BACKEND = env(
     "EMAIL_BACKEND",
-    default="django.core.mail.backends.smtp.EmailBackend",
+    default="django.cms_user.mail.backends.smtp.EmailBackend",
 )
 # https://docs.djangoproject.com/en/dev/ref/settings/#email-timeout
 EMAIL_TIMEOUT = 5
@@ -129,8 +132,9 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.forms",
     "ninja",
-    "garden.core",
-    "garden.core_ninja",
+    "garden.garden",
+    "garden.api_garden",
+    "garden.cms_user",
     "garden.cms",
     "garden.cms_ninja",
 ]

@@ -4,5 +4,5 @@ from .api import api
 
 
 urlpatterns = [
-    path("api/", api.urls),
+    path("api_garden/", api.urls),
 ]

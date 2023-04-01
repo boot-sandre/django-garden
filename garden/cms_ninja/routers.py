@@ -9,9 +9,9 @@ from garden.cms_ninja.schemas import (
 )
 from django.shortcuts import get_object_or_404
 
-from garden.core_ninja.schemas import ResponseContract
+from garden.api_garden.schemas import ResponseContract
 
-router = Router(tags=["garden_cms"])
+router = Router(tags=["cms_ninja"])
 
 
 @router.get("hello")
@@ -87,7 +87,7 @@ def update_page(request, page_id: int, payload: PageEditContract):
 def safe_delete(request, page_id: int):
     page = get_object_or_404(Page, pk=page_id)
     page.safe_delete()
-    return {"success": True, "message": "CMS page is desactivated"}
+    return {"success": True, "message": "CMS page was deactivated"}
 
 
 @router.delete(
@@ -100,4 +100,4 @@ def safe_delete(request, page_id: int):
 def safe_restore(request, page_id: int):
     page = get_object_or_404(Page, pk=page_id)
     page.safe_restore()
-    return {"success": True, "message": "CMS page is restorated"}
+    return {"success": True, "message": "CMS page was restore"}

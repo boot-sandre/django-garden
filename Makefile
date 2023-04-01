@@ -80,19 +80,19 @@ clean: clean_venv clean_py
 full_clean: clean clean_var
 
 django-serve:
-	$(python) manage.py runserver localhost:${GARDEN_EXPOSED_PORT} --settings=garden.core.settings
+	$(python) manage.py runserver localhost:${GARDEN_EXPOSED_PORT} --settings=garden.garden.settings
 
 django-migrate:
-	$(python) manage.py migrate --settings=garden.core.settings
+	$(python) manage.py migrate --settings=garden.garden.settings
 
 django-makemigrations: 
-	$(python) manage.py makemigrations --settings=garden.core.settings
+	$(python) manage.py makemigrations --settings=garden.garden.settings
 
 django-test:
 	$(pytest)
 
 django-superuser:
-	$(python) manage.py createsuperuser --settings garden.core.settings
+	$(python) manage.py createsuperuser --settings garden.garden.settings
 
 black:
 	$(black) garden 

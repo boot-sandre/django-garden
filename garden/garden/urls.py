@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.urls import path, include
-from garden.core import views
+from garden.garden import views
 
 
 url_native_patterns = [
@@ -12,7 +12,7 @@ url_native_patterns = [
 
 url_api_patterns = [
     # Ninja api app
-    path("", include("garden.core_ninja.urls")),
+    path("", include("garden.api_garden.urls")),
 ]
 
 # Set django urlpatterns

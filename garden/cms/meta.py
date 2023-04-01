@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.db import models
-from garden.core_ninja.exceptions import GardenApplicationError
+from garden.api_garden.exceptions import GardenApplicationError
 
 
 STATES_CMS = [
@@ -113,6 +113,7 @@ class FileMeta(models.Model):
 
     class Meta:
         abstract = True
+
 
 class UserLinkMeta(models.Model):
     author = models.ForeignKey(
