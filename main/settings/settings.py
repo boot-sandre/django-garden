@@ -38,6 +38,11 @@ INSTALLED_APPS = [
     # project apps
     "apps.account",
     "apps.doc",
+    # Garden CMS apps
+    "garden.api_garden",
+    "garden.cms_user",
+    "garden.cms",
+    "garden.cms_ninja",
     # project dependencies
     "corsheaders",
 ]
@@ -86,6 +91,9 @@ DATABASES = {
     }
 }
 
+# Authentication User Model
+# https://docs.djangoproject.com/en/4.1/ref/settings/#auth-user-model
+AUTH_USER_MODEL = "cms_user.GardenUser"
 
 # Password validation
 # https://docs.djangoproject.com/en/4.1/ref/settings/#auth-password-validators

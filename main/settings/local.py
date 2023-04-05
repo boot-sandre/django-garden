@@ -2,3 +2,4 @@
 
 from .settings import *
 from .dev import *  # Share things on dev and version them
+DEBUG = True

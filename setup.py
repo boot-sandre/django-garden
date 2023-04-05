@@ -1,9 +1,10 @@
 from setuptools import setup
 
 setup(
-    name="apps",
-    version="0.2.0",
+    name="DjangoGarden",
+    version="0.3.0",
     include_package_data=True,
-    packages=["apps.account", "apps.base"],
+    packages=["apps.account", "apps.base",
+              "garden.cms_user", "gardens.cms", "garden.cms_ninja", "garden.api_garden"],
     zip_safe=False,
 )

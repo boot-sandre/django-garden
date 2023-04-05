@@ -1,5 +1,10 @@
 recursive-include apps/account *
 recursive-include apps/base *
+recursive-include garden/api_garden *
+recursive-include garden/cms_user *
+recursive-include garden/cms *
+recursive-include garden/cms_ninja *
+
 
 recursive-exclude * __pycache__
 recursive-exclude * *.py[co]

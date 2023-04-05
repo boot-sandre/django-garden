@@ -10,6 +10,7 @@ from .api import api
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", api.urls),
+    path("api_garden/", include("garden.api_garden.urls")),
     path("", include("apps.account.urls")),
     re_path(r"^", TemplateView.as_view(template_name="index.html")),
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
